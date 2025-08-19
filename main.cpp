@@ -345,7 +345,7 @@ namespace BusinessApp
             std::cout << "User login (" << userId << ")" << std::endl;
         }
 
-        // wylogowanie 
+        // wylogowanie
         void Logout()
         {
             std::cout << "User logout (" << m_user.Id() << ")" << std::endl;

@@ -1,0 +1,30 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "ClangCl",
+            "displayName": "Clang-cl 20.1.8 x86_64-pc-windows-msvc",
+            "description": "Using clang-cl as C and C++ compiler",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
+                "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "ClangCl-Debug",
+            "configurePreset": "ClangCl",
+            "configuration": "Debug"
+        },
+        {
+            "name": "ClangCl-Release",
+            "configurePreset": "ClangCl",
+            "configuration": "Release"
+        }
+    ]
+}

@@ -1,4 +1,11 @@
-Checks: 'clang-diagnostic-*,clang-analyzer-*,modernize-*,readability-*,performance-*'
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  modernize-*,
+  readability-*,
+  performance-*,
+  cppcoreguidelines-*,
+  bugprone-*
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 FormatStyle: none

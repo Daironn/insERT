@@ -3,17 +3,23 @@
     "cmake.preferredGenerators": [
         "Visual Studio 17 2022"
     ],
+    "clangd.arguments": [
+        "--clang-tidy",
+        "--clang-tidy-checks=*",
+        "--header-insertion=never",
+        "--fallback-style=none"
+    ],
     "[cpp]": {
-        "editor.defaultFormatter": "ms-vscode.cpptools"
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
     },
     "[c]": {
-        "editor.defaultFormatter": "ms-vscode.cpptools"
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
     },
     "editor.formatOnSave": true,
-    "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": false,
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit",
         "source.fixAll.clang-tidy": "explicit"
-    }
+    },
 }

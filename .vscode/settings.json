@@ -7,7 +7,8 @@
         "--clang-tidy",
         "--clang-tidy-checks=*",
         "--header-insertion=never",
-        "--fallback-style=none"
+        "--fallback-style=none",
+        "--compile-commands-dir=${workspaceFolder}/out/build/ClangCl"
     ],
     "[cpp]": {
         "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"

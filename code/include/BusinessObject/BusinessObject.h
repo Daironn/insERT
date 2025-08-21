@@ -7,7 +7,7 @@ class BusinessObject : public IBusinessObject
     long         m_objectId{0L};
     unsigned int m_objectType;
 
-    BusinessObject() = delete;
+    BusinessObject() = default;
     BusinessObject(unsigned int type) : m_objectType(type) {}
 
     long         Id() const;

@@ -4,10 +4,8 @@
 
 class Product : public BusinessObject
 {
-  private:
-    std::string m_productName;
-
   public:
+    std::string m_productName;
     Product() = default;
 
     void OnFetch() override;

@@ -11,7 +11,7 @@ class App
     std::shared_ptr<AppUser>            m_user;
 
   public:
-    App() = default;
+    App();
 
     void Login(int userId);
     void Logout();

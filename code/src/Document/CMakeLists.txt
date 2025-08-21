@@ -7,4 +7,5 @@ target_include_directories(DOCUMENT
 
 target_link_libraries(APPUSER
     PUBLIC BUSINESSOBJECT
+    PUBLIC PRODUCT
 )

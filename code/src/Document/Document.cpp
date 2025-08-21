@@ -1,50 +1,55 @@
 #include "Document.h"
 
-void OnFetch()
+#include "Product/Product.h"
+
+// TODO: Change CMake to include only needed files
+#include "common/Logger.h"
+
+void Document::OnFetch()
 {
-    // m_documentNumber = "document_" + std::to_string(Id());
+    m_documentNumber = "document_" + std::to_string(Id());
 
-    // // wczytanie powiązanych towarów
-    // Product product{};
-    // product.Fetch(std::rand() % 100 + 1);
-    // AddProduct(product);
+    // wczytanie powiązanych towarów
+    Product product{};
+    product.Fetch(std::rand() % 100 + 1);
+    AddProduct(product);
 
-    // std::cout << "Document fetched: " << m_documentNumber << std::endl;
+    LOG_INFO("Document fetched: {}", m_documentNumber);
 }
 
-void OnUpdate()
+void Document::OnUpdate()
 {
-    // // zapisanie powiazanych towarów
-    // for (auto& product : m_products)
-    //     product.Update();
+    // zapisanie powiazanych towarów
+    for (auto& product : m_products)
+        product.Update();
 
-    // std::cout << "Document updated: " << m_documentNumber << std::endl;
+    LOG_INFO("Document updated: {}", m_documentNumber);
 }
 
-void OnDelete()
+void Document::OnDelete()
 {
-    // // usunięcie powiązanych towarów
-    // for (auto& product : m_products)
-    //     product.Delete();
+    // usunięcie powiązanych towarów
+    for (auto& product : m_products)
+        product.Delete();
 
-    // std::cout << "Document deleted: " << m_documentNumber << std::endl;
+    LOG_INFO("Document deleted: {}", m_documentNumber);
 }
 
-void SetDocumentNumber(std::string documentNumber)
+void Document::SetDocumentNumber(std::string documentNumber)
 {
-    // m_documentNumber = documentNumber;
+    m_documentNumber = documentNumber;
 }
 
-void AddProduct(const Product& product)
+void Document::AddProduct(const Product& product)
 {
-    // m_products.push_back(product);
+    m_products.push_back(product);
 }
 
-void SendDocumentProductsEmail()
+void Document::SendDocumentProductsEmail()
 {
-    // std::string content;
-    // for (auto& product : m_products)
-    //     content += product.m_productName + "\n";
+    std::string content;
+    for (auto& product : m_products)
+        content += product.m_productName + "\n";
 
-    // std::cout << "Sending document content email: " << content << std::endl;
+    LOG_INFO("Sending document content email: {}", content);
 }

@@ -12,6 +12,8 @@ class BusinessOperations
     std::shared_ptr<AppUser>               m_user;
 
   public:
+    BusinessOperations();
+
     void FetchUser(int userId);
     void AddNewDocument();
     void FetchMoreDocument();

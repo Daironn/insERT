@@ -9,7 +9,7 @@ constexpr unsigned int ObjectAppUser  = 0;
 constexpr unsigned int ObjectDocument = 1;
 constexpr unsigned int ObjectProduct  = 2;
 
-std::string object_type_to_str(unsigned int type)
+inline std::string object_type_to_str(unsigned int type)
 {
     switch (type)
     {
@@ -24,8 +24,9 @@ std::string object_type_to_str(unsigned int type)
     }
 }
 
-struct IBusinessObject
+class IBusinessObject
 {
+  public:
     virtual ~IBusinessObject() = default;
 
     virtual long         Id() const     = 0;

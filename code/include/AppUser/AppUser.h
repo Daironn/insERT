@@ -5,7 +5,7 @@
 class AppUser : public BusinessObject
 {
   private:
-    std::string m_login;
+    std::string m_login{"TEST_LOGIN"};
 
   public:
     AppUser() = default;

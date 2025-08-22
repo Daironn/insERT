@@ -13,7 +13,7 @@ class App
   public:
     App();
 
-    void Login(int userId);
-    void Logout();
+    // void Login(int userId);
+    // void Logout();
     void DoBusinessOperations();
 };

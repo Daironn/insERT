@@ -3,28 +3,22 @@
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
 
-void AppUser::OnFetch()
+long AppUser::GetId() const
 {
-    m_login = "user" + std::to_string(Id());
-    LOG_INFO("AppUser fetched: {}", m_login);
+    return id;
 }
 
-void AppUser::OnUpdate()
+ObjectType AppUser::GetType() const
 {
-    LOG_INFO("AppUser updated: {}", m_login);
+    return ObjectType::ObjectAppUser;
 }
 
-void AppUser::OnDelete()
+const std::string& AppUser::GetLogin() const
 {
-    LOG_INFO("AppUser deleted: {}", m_login);
+    return login;
 }
 
-void AppUser::SetLogin(std::string login)
+void AppUser::SetLogin(const std::string& l)
 {
-    m_login = login;
-}
-
-const std::string& AppUser::Login() const
-{
-    return "TEST_LOGIN";
+    login = l;
 }

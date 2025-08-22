@@ -1,24 +1,21 @@
 #pragma once
 
-#include "BusinessObject/BusinessObject.h"
+#include "BusinessObject/IBusinessObject.h"
 
-class Product;
-
-class Document : public BusinessObject
+class Document : public IBusinessObject
 {
-  private:
-    std::string          m_documentNumber;
-    std::vector<Product> m_products;
+    long              id{};
+    std::string       number;
+    std::vector<long> productIds;
 
   public:
-    Document() = default;
+    Document(long documentId) : id(documentId) {}
+    long       GetId() const override;
+    ObjectType GetType() const override;
 
-    void OnFetch() override;
-    void OnUpdate() override;
-    void OnDelete() override;
-    void SendDocumentProductsEmail() override;
+    const std::string& GetNumber() const;
+    void               SetNumber(const std::string& n);
 
-    void SetDocumentNumber(std::string documentNumber);
-
-    void AddProduct(const Product& product);
+    void                     AddProduct(long productId);
+    const std::vector<long>& GetProducts() const;
 };

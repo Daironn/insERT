@@ -3,23 +3,22 @@
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
 
-void Product::OnFetch()
+long Product::GetId() const
 {
-    m_productName = "product_" + std::to_string(Id());
-    LOG_INFO("Product fetched: {}", m_productName);
+    return id;
 }
 
-void Product::OnUpdate()
+ObjectType Product::GetType() const
 {
-    LOG_INFO("Product updated: {}", m_productName);
+    return ObjectType::ObjectProduct;
 }
 
-void Product::OnDelete()
+const std::string& Product::GetName() const
 {
-    LOG_INFO("Product deleted: {}", m_productName);
+    return name;
 }
 
-void Product::SetProductName(std::string productName)
+void Product::SetName(const std::string& n)
 {
-    m_productName = productName;
+    name = n;
 }

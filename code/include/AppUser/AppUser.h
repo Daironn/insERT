@@ -1,20 +1,18 @@
 #pragma once
 
-#include "BusinessObject/BusinessObject.h"
+#include "BusinessObject/IBusinessObject.h"
 
-class AppUser : public BusinessObject
+class AppUser : public IBusinessObject
 {
-  private:
-    std::string m_login{"TEST_LOGIN"};
+    long        id{};
+    std::string login;
 
   public:
-    AppUser() = default;
+    AppUser(long userId) : id(userId) {}
 
-    void OnFetch() override;
-    void OnUpdate() override;
-    void OnDelete() override;
+    long       GetId() const override;
+    ObjectType GetType() const override;
 
-    void SetLogin(std::string login);
-
-    const std::string& Login() const;
+    const std::string& GetLogin() const;
+    void               SetLogin(const std::string& userLogin);
 };

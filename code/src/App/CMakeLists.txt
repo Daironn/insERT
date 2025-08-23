@@ -7,8 +7,8 @@ target_include_directories(APP
 )
 
 target_link_libraries(APP
-    PUBLIC BUSINESSOPERATIONS
     PUBLIC APPUSER
     PUBLIC DATABASE
     PUBLIC PRODUCT
+    PUBLIC DOCUMENT
     )

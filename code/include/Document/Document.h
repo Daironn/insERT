@@ -9,13 +9,14 @@ class Document : public IBusinessObject
     std::vector<long> productIds;
 
   public:
-    Document(long documentId) : id(documentId) {}
+    Document(long documentId, const std::string& productNumber)
+        : id(documentId), number(productNumber)
+    {
+    }
     long       GetId() const override;
     ObjectType GetType() const override;
 
-    const std::string& GetNumber() const;
-    void               SetNumber(const std::string& n);
-
+    const std::string&       GetNumber() const;
     void                     AddProduct(long productId);
     const std::vector<long>& GetProducts() const;
 };

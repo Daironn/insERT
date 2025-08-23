@@ -20,11 +20,6 @@ const std::string& Document::GetNumber() const
     return number;
 }
 
-void Document::SetNumber(const std::string& n)
-{
-    number = n;
-}
-
 void Document::AddProduct(long productId)
 {
     productIds.push_back(productId);

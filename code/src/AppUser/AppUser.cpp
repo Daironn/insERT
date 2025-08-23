@@ -5,7 +5,7 @@
 
 long AppUser::GetId() const
 {
-    return id;
+    return m_userId;
 }
 
 ObjectType AppUser::GetType() const
@@ -15,10 +15,5 @@ ObjectType AppUser::GetType() const
 
 const std::string& AppUser::GetLogin() const
 {
-    return login;
-}
-
-void AppUser::SetLogin(const std::string& l)
-{
-    login = l;
+    return m_login;
 }

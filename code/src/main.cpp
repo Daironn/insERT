@@ -4,7 +4,7 @@
 
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
-// #include "common/common.h"
+#include "common/common.h"
 
 namespace SystemOperations
 {
@@ -28,9 +28,9 @@ int main(int argc, char** argv)
     {
         LOG_INFO("Application started");
         App app{};
-        // app.Login(1);
+        app.Login(ADMIN_USER_ID);
         app.DoBusinessOperations();
-        // app.Logout();
+        app.Logout();
     }
     // else if (argc == 2 && std::string{argv[1]} == "-backup")
     // {

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-enum ObjectType
+enum class ObjectType
 {
     ObjectAppUser = 0,
     ObjectDocument,
@@ -16,11 +16,11 @@ inline std::string ObjectTypeToString(ObjectType type)
 {
     switch (type)
     {
-    case ObjectAppUser:
+    case ObjectType::ObjectAppUser:
         return "AppUser";
-    case ObjectDocument:
+    case ObjectType::ObjectDocument:
         return "Document";
-    case ObjectProduct:
+    case ObjectType::ObjectProduct:
         return "Product";
     default:
         return "Unknown";
@@ -30,6 +30,7 @@ inline std::string ObjectTypeToString(ObjectType type)
 class IBusinessObject
 {
   public:
-    virtual long       GetId() const   = 0;
-    virtual ObjectType GetType() const = 0;
+    virtual long               GetId() const   = 0;
+    virtual ObjectType         GetType() const = 0;
+    virtual const std::string& GetName() const = 0;
 };

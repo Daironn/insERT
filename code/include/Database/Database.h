@@ -9,23 +9,22 @@ class IBusinessObject;
 class Database
 {
   private:
-    std::unordered_map<long, std::shared_ptr<IBusinessObject>> storage;
-    long                                                       nextId{1};
+    std::unordered_map<long, std::shared_ptr<IBusinessObject>> m_storage;
+    long                                                       m_nextId;
 
   public:
     Database();
 
-    template <typename T, typename... Args> T* Create(Args&&... args)
+    template <typename T, typename... Args> std::shared_ptr<T> Create(Args&&... args)
     {
-        auto obj              = std::make_unique<T>(nextId++, std::forward<Args>(args)...);
-        auto ptr              = obj.get();
-        storage[ptr->GetId()] = std::move(obj);
-
-        LOG_INFO("Created object ({}, {})", ObjectTypeToString(ptr->GetType()), ptr->GetId());
-        return ptr;
+        auto obj                = std::make_shared<T>(m_nextId++, std::forward<Args>(args)...);
+        m_storage[obj->GetId()] = obj;
+        LOG_INFO("Created object ({}, {})", ObjectTypeToString(obj->GetType()), obj->GetId());
+        return obj;
     }
-    std::optional<std::shared_ptr<IBusinessObject>> Fetch(long id);
-    void                                            Update(const IBusinessObject* obj);
-    void                                            Delete(long id);
-    const std::vector<long>                         GetAllIds() const;
+
+    std::shared_ptr<IBusinessObject> Fetch(long id);
+    void                             Update(const std::shared_ptr<IBusinessObject>& obj);
+    void                             Delete(long id);
+    const std::vector<long>          GetAllIds() const;
 };

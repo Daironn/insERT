@@ -5,27 +5,32 @@
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
 
+Document::Document(long documentId, const std::string& productNumber)
+    : m_documentId(documentId), m_name(productNumber)
+{
+}
+
 long Document::GetId() const
 {
-    return id;
+    return m_documentId;
 }
 
 ObjectType Document::GetType() const
 {
-    return ObjectDocument;
+    return ObjectType::ObjectDocument;
 }
 
-const std::string& Document::GetNumber() const
+const std::string& Document::GetName() const
 {
-    return number;
+    return m_name;
 }
 
 void Document::AddProduct(long productId)
 {
-    productIds.push_back(productId);
+    m_productIds.push_back(productId);
 }
 
 const std::vector<long>& Document::GetProducts() const
 {
-    return productIds;
+    return m_productIds;
 }

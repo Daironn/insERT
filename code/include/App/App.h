@@ -14,10 +14,10 @@ class App
   public:
     App();
 
-    void      Login(int userId);
-    void      Logout();
-    void      DoBusinessOperations();
-    Document* CreateDocument(const std::string& number);
-    void      AddProductToDocument(Document* doc, const std::string& productName);
-    void      RemoveAllDocuments();
+    void                      Login(int userId);
+    void                      Logout();
+    void                      DoBusinessOperations();
+    std::shared_ptr<Document> CreateDocument(const std::string& number);
+    void AddProductToDocument(std::shared_ptr<Document> doc, const std::string& productName);
+    void RemoveAllDocuments();
 };

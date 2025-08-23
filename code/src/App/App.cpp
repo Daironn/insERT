@@ -12,14 +12,14 @@ App::App() : m_database(std::make_shared<Database>()) {}
 
 void App::Login(int userId)
 {
-    auto objOpt = m_database->Fetch(userId);
-    if (!objOpt)
+    auto obj = m_database->Fetch(userId);
+    if (!obj)
     {
         LOG_ERROR("Login failed: user with id={} not found", userId);
         return;
     }
 
-    auto user = std::dynamic_pointer_cast<AppUser>(*objOpt);
+    auto user = std::dynamic_pointer_cast<AppUser>(obj);
     if (!user)
     {
         LOG_ERROR("Login failed: object with id={} is not an AppUser", userId);
@@ -27,14 +27,14 @@ void App::Login(int userId)
     }
 
     m_user = user;
-    LOG_INFO("User login: {} (id={})", user->GetLogin(), user->GetId());
+    LOG_INFO("User login: {} (id={})", user->GetName(), user->GetId());
 }
 
 void App::Logout()
 {
     if (auto user = m_user.lock())
     {
-        LOG_INFO("User logout: {} (id={})", user->GetLogin(), user->GetId());
+        LOG_INFO("User logout: {} (id={})", user->GetName(), user->GetId());
         m_user.reset();
     }
     else
@@ -60,23 +60,43 @@ void App::DoBusinessOperations()
     CreateDocument("DC_002");
     CreateDocument("DC_003");
 
-    // m_database->FetchMoreDocument();
-
     RemoveAllDocuments();
 }
 
-Document* App::CreateDocument(const std::string& number)
+std::shared_ptr<Document> App::CreateDocument(const std::string& number)
 {
-    auto doc = m_database->Create<Document>(number);
-    LOG_INFO("Created document id=%ld number=%s", doc->GetId(), number.c_str());
-    return doc;
+    if (auto doc = m_database->Create<Document>(number); doc)
+    {
+        LOG_INFO("Created document id={} number={}", doc->GetId(), doc->GetName());
+        return doc;
+    }
+    else
+    {
+        LOG_ERROR("Failed to create document number={}", number);
+        return nullptr;
+    }
 }
 
-void App::AddProductToDocument(Document* doc, const std::string& productName)
+void App::AddProductToDocument(std::shared_ptr<Document> doc, const std::string& productName)
 {
+    if (!doc)
+    {
+        LOG_ERROR("AddProductToDocument: null document");
+        return;
+    }
+
     auto product = m_database->Create<Product>(productName);
+    if (!product)
+    {
+        LOG_ERROR("AddProductToDocument: failed to create product {}", productName);
+        return;
+    }
+
     doc->AddProduct(product->GetId());
-    LOG_INFO("Added product %s to document %ld", productName.c_str(), doc->GetId());
+    LOG_INFO("Added product {} (id={}) to document id={}",
+             product->GetName(),
+             product->GetId(),
+             doc->GetId());
 }
 
 void App::RemoveAllDocuments()
@@ -84,10 +104,9 @@ void App::RemoveAllDocuments()
     std::vector<long> toDelete;
     for (auto id : m_database->GetAllIds())
     {
-        auto objOpt = m_database->Fetch(id);
-        if (objOpt)
+        auto obj = m_database->Fetch(id);
+        if (obj)
         {
-            auto obj = *objOpt;
             if (obj->GetType() == ObjectType::ObjectDocument)
                 toDelete.push_back(id);
         }

@@ -13,8 +13,7 @@ target_link_libraries(insERT
     PRIVATE
     APP
     APPUSER
-    BUSINESSOBJECT
-    BUSINESSOPERATIONS
+    DATABASE
     DOCUMENT
     PRODUCT
 )

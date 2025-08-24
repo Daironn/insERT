@@ -1,15 +1,18 @@
 #pragma once
 
-#include "BusinessObject/BusinessObject.h"
+#include <string>
 
-class Product : public BusinessObject
+#include "BusinessObject/IBusinessObject.h"
+
+class Product : public IBusinessObject
 {
-  public:
-    std::string m_productName;
-    Product() = default;
+    long        id{};
+    std::string name;
 
-    void OnFetch() override;
-    void OnUpdate() override;
-    void OnDelete() override;
-    void SetProductName(std::string productName);
+  public:
+    Product(long productId, const std::string& productName);
+    long       GetId() const override;
+    ObjectType GetType() const override;
+
+    const std::string& GetName() const;
 };

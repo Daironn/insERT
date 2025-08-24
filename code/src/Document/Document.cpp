@@ -5,51 +5,27 @@
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
 
-void Document::OnFetch()
+long Document::GetId() const
 {
-    m_documentNumber = "document_" + std::to_string(Id());
-
-    // wczytanie powiązanych towarów
-    Product product{};
-    product.Fetch(std::rand() % 100 + 1);
-    AddProduct(product);
-
-    LOG_INFO("Document fetched: {}", m_documentNumber);
+    return id;
 }
 
-void Document::OnUpdate()
+ObjectType Document::GetType() const
 {
-    // zapisanie powiazanych towarów
-    for (auto& product : m_products)
-        product.Update();
-
-    LOG_INFO("Document updated: {}", m_documentNumber);
+    return ObjectDocument;
 }
 
-void Document::OnDelete()
+const std::string& Document::GetNumber() const
 {
-    // usunięcie powiązanych towarów
-    for (auto& product : m_products)
-        product.Delete();
-
-    LOG_INFO("Document deleted: {}", m_documentNumber);
+    return number;
 }
 
-void Document::SetDocumentNumber(std::string documentNumber)
+void Document::AddProduct(long productId)
 {
-    m_documentNumber = documentNumber;
+    productIds.push_back(productId);
 }
 
-void Document::AddProduct(const Product& product)
+const std::vector<long>& Document::GetProducts() const
 {
-    m_products.push_back(product);
-}
-
-void Document::SendDocumentProductsEmail()
-{
-    std::string content;
-    for (auto& product : m_products)
-        content += product.m_productName + "\n";
-
-    LOG_INFO("Sending document content email: {}", content);
+    return productIds;
 }

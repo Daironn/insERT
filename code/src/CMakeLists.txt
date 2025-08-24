@@ -1,6 +1,5 @@
 add_subdirectory(App)
 add_subdirectory(AppUser)
-add_subdirectory(BusinessObject)
-add_subdirectory(BusinessOperations)
+add_subdirectory(Database)
 add_subdirectory(Document)
 add_subdirectory(Product)

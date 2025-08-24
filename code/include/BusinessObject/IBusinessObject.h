@@ -5,20 +5,23 @@
 #include <string>
 #include <vector>
 
-constexpr unsigned int ObjectAppUser  = 0;
-constexpr unsigned int ObjectDocument = 1;
-constexpr unsigned int ObjectProduct  = 2;
+enum ObjectType
+{
+    ObjectAppUser = 0,
+    ObjectDocument,
+    ObjectProduct
+};
 
-inline std::string object_type_to_str(unsigned int type)
+inline std::string ObjectTypeToString(ObjectType type)
 {
     switch (type)
     {
-    case ObjectProduct:
-        return "Product";
-    case ObjectDocument:
-        return "Document";
     case ObjectAppUser:
         return "AppUser";
+    case ObjectDocument:
+        return "Document";
+    case ObjectProduct:
+        return "Product";
     default:
         return "Unknown";
     }
@@ -27,17 +30,6 @@ inline std::string object_type_to_str(unsigned int type)
 class IBusinessObject
 {
   public:
-    virtual ~IBusinessObject() = default;
-
-    virtual long         Id() const     = 0;
-    virtual unsigned int Type() const   = 0;
-    virtual void         InitNew()      = 0;
-    virtual void         Fetch(long id) = 0;
-    virtual void         Update()       = 0;
-    virtual void         Delete()       = 0;
-    virtual void         ShowWindow()   = 0;
-    virtual void         Print()        = 0;
-
-    // document
-    virtual void SendDocumentProductsEmail() = 0;
+    virtual long       GetId() const   = 0;
+    virtual ObjectType GetType() const = 0;
 };

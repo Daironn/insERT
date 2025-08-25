@@ -1,27 +1,30 @@
 #pragma once
 #include <string>
-
-using Id                          = long;
-inline constexpr Id ADMIN_USER_ID = 1;
-
-enum class ObjectType
+namespace insERT::common
 {
-    ObjectAppUser = 0,
-    ObjectDocument,
-    ObjectProduct
-};
+    using Id                          = long;
+    inline constexpr Id ADMIN_USER_ID = 1;
 
-inline std::string ObjectTypeToString(ObjectType type)
-{
-    switch (type)
+    enum class ObjectType
     {
-    case ObjectType::ObjectAppUser:
-        return "AppUser";
-    case ObjectType::ObjectDocument:
-        return "Document";
-    case ObjectType::ObjectProduct:
-        return "Product";
-    default:
-        return "Unknown";
+        ObjectAppUser = 0,
+        ObjectDocument,
+        ObjectProduct
+    };
+
+    inline std::string ObjectTypeToString(ObjectType type)
+    {
+        switch (type)
+        {
+        case ObjectType::ObjectAppUser:
+            return "AppUser";
+        case ObjectType::ObjectDocument:
+            return "Document";
+        case ObjectType::ObjectProduct:
+            return "Product";
+        default:
+            return "Unknown";
+        }
     }
-}
+
+} // namespace insERT::common

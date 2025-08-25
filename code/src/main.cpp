@@ -11,16 +11,18 @@
 
 int main(int argc, char** argv)
 {
-    auto db = std::make_shared<Database>();
+    auto db = std::make_shared<insERT::database::Database>();
 
-    std::shared_ptr<IBusinessOperations> bizIface = std::make_shared<BusinessOperations>(db);
-    std::shared_ptr<ISystemOperations>   sysIface = std::make_shared<SystemOperations>(db);
+    std::shared_ptr<insERT::ops::IBusinessOperations> bizIface
+        = std::make_shared<insERT::ops::BusinessOperations>(db);
+    std::shared_ptr<insERT::ops::ISystemOperations> sysIface
+        = std::make_shared<insERT::ops::SystemOperations>(db);
 
-    App app(db, bizIface);
+    insERT::app::App app(db, bizIface);
 
     if (argc == 1)
     {
-        app.Login(ADMIN_USER_ID);
+        app.Login(insERT::common::ADMIN_USER_ID);
         app.DoBusinessOperations();
         app.Logout();
     }

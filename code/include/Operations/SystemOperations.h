@@ -3,13 +3,19 @@
 
 #include "ISystemOperations.h"
 
-class IDatabase;
-
-class SystemOperations : public ISystemOperations
+namespace insERT::database
 {
-    std::shared_ptr<IDatabase> m_database;
+    class IDatabase;
+}
 
-  public:
-    explicit SystemOperations(std::shared_ptr<IDatabase> database);
-    void BackupDocuments() override;
-};
+namespace insERT::ops
+{
+    class SystemOperations : public ISystemOperations
+    {
+        std::shared_ptr<database::IDatabase> m_database;
+
+      public:
+        explicit SystemOperations(std::shared_ptr<database::IDatabase> database);
+        void BackupDocuments() override;
+    };
+} // namespace insERT::ops

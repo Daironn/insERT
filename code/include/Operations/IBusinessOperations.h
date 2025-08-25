@@ -2,12 +2,15 @@
 #include <optional>
 
 #include "common/common.h"
-
-class IBusinessOperations
+namespace insERT::ops
 {
-  public:
-    virtual ~IBusinessOperations()                                   = default;
-    virtual void AddNewDocument(const std::string& docNumber)        = 0;
-    virtual void FetchMoreDocuments()                                = 0;
-    virtual bool RemoveAllDocuments(std::optional<Id> currentUserId) = 0;
-};
+    class IBusinessOperations
+    {
+      public:
+        virtual ~IBusinessOperations()                                           = default;
+        virtual void AddNewDocument(const std::string& docNumber)                = 0;
+        virtual void FetchMoreDocuments()                                        = 0;
+        virtual bool RemoveAllDocuments(std::optional<common::Id> currentUserId) = 0;
+    };
+
+} // namespace insERT::ops

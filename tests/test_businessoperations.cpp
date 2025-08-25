@@ -12,15 +12,16 @@ using ::testing::StrictMock;
 
 SCENARIO("BusinessOperations AddNewDocument adds a new Document", "[BusinessOperations]")
 {
-    auto               mockDb = std::make_shared<StrictMock<MockDatabase>>();
-    BusinessOperations businessOps(mockDb);
+    auto mockDb = std::make_shared<StrictMock<MockDatabase>>();
+
+    insERT::ops::BusinessOperations businessOps(mockDb);
 
     GIVEN("A document name")
     {
         std::string docName = "DC_001";
 
-        EXPECT_CALL(*mockDb, Create(ObjectType::ObjectDocument, docName))
-            .WillOnce(Return(std::make_shared<Document>(42, docName)));
+        EXPECT_CALL(*mockDb, Create(insERT::common::ObjectType::ObjectDocument, docName))
+            .WillOnce(Return(std::make_shared<insERT::object::Document>(42, docName)));
 
         WHEN("AddNewDocument is called")
         {
@@ -36,10 +37,11 @@ SCENARIO("BusinessOperations AddNewDocument adds a new Document", "[BusinessOper
 
 SCENARIO("BusinessOperations FetchMoreDocuments fetches all documents", "[BusinessOperations]")
 {
-    auto               mockDb = std::make_shared<StrictMock<MockDatabase>>();
-    BusinessOperations businessOps(mockDb);
+    auto mockDb = std::make_shared<StrictMock<MockDatabase>>();
 
-    EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<Id>{1, 2, 3}));
+    insERT::ops::BusinessOperations businessOps(mockDb);
+
+    EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<insERT::common::Id>{1, 2, 3}));
     EXPECT_CALL(*mockDb, Fetch(_)).Times(3);
 
     WHEN("FetchMoreDocuments is called")
@@ -55,16 +57,18 @@ SCENARIO("BusinessOperations FetchMoreDocuments fetches all documents", "[Busine
 SCENARIO("BusinessOperations RemoveAllDocuments delegates to Database::Delete",
          "[BusinessOperations]")
 {
-    auto               mockDb = std::make_shared<StrictMock<MockDatabase>>();
-    BusinessOperations businessOps(mockDb);
+    auto mockDb = std::make_shared<StrictMock<MockDatabase>>();
+
+    insERT::ops::BusinessOperations businessOps(mockDb);
 
     GIVEN("Database with some documents and other objects")
     {
-        EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<Id>{2, 3, 4}));
+        EXPECT_CALL(*mockDb, GetAllIds())
+            .WillOnce(Return(std::vector<insERT::common::Id>{2, 3, 4}));
 
-        auto user = std::make_shared<AppUser>(2, "Jerzy");
-        auto doc2 = std::make_shared<Document>(3, "DC_001");
-        auto doc3 = std::make_shared<Document>(4, "DC_002");
+        auto user = std::make_shared<insERT::object::AppUser>(2, "Jerzy");
+        auto doc2 = std::make_shared<insERT::object::Document>(3, "DC_001");
+        auto doc3 = std::make_shared<insERT::object::Document>(4, "DC_002");
 
         EXPECT_CALL(*mockDb, Fetch(2)).WillOnce(Return(user));
         EXPECT_CALL(*mockDb, Fetch(3)).WillOnce(Return(doc2));
@@ -86,10 +90,10 @@ SCENARIO("BusinessOperations RemoveAllDocuments delegates to Database::Delete",
 
     GIVEN("Database with some documents and other objects")
     {
-        EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<Id>{2, 3}));
+        EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<insERT::common::Id>{2, 3}));
 
-        auto doc2 = std::make_shared<Document>(2, "DC_002");
-        auto doc3 = std::make_shared<Document>(3, "DC_003");
+        auto doc2 = std::make_shared<insERT::object::Document>(2, "DC_002");
+        auto doc3 = std::make_shared<insERT::object::Document>(3, "DC_003");
 
         EXPECT_CALL(*mockDb, Fetch(2)).WillOnce(Return(doc2));
         EXPECT_CALL(*mockDb, Fetch(3)).WillOnce(Return(doc3));

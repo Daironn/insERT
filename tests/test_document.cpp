@@ -7,7 +7,7 @@ SCENARIO("Document basic functionality", "[Document]")
 {
     GIVEN("A Document with id=200 and name='Invoice'")
     {
-        Document doc(200, "Invoice");
+        insERT::object::Document doc(200, "Invoice");
 
         WHEN("GetId and GetName are called")
         {

@@ -7,7 +7,7 @@ SCENARIO("AppUser basic functionality", "[AppUser]")
 {
     GIVEN("A AppUser with id=42 and name='test_user'")
     {
-        AppUser user(42, "test_user");
+        insERT::object::AppUser user(42, "test_user");
 
         WHEN("GetId is calleds")
         {
@@ -29,7 +29,7 @@ SCENARIO("AppUser basic functionality", "[AppUser]")
         {
             THEN("ObjectAppUser should be returned")
             {
-                REQUIRE(user.GetType() == ObjectType::ObjectAppUser);
+                REQUIRE(user.GetType() == insERT::common::ObjectType::ObjectAppUser);
             }
         }
     }

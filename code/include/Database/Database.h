@@ -5,29 +5,37 @@
 #include "IDatabase.h"
 #include "common/common.h"
 
-class IBusinessObject;
-
-class Database : public IDatabase
+namespace insERT::object
 {
-    mutable std::mutex                                       mtx;
-    std::unordered_map<Id, std::shared_ptr<IBusinessObject>> m_storage;
-    Id                                                       m_nextId;
+    class IBusinessObject;
+}
 
-    template <typename T, typename... Args> std::shared_ptr<T> CreateImpl(Args&&... args)
+namespace insERT::database
+{
+    class Database : public IDatabase
     {
-        std::scoped_lock lock(mtx);
+        std::unordered_map<common::Id, std::shared_ptr<object::IBusinessObject>> m_storage;
 
-        auto obj                = std::make_shared<T>(m_nextId++, std::forward<Args>(args)...);
-        m_storage[obj->GetId()] = obj;
-        return obj;
-    }
+        mutable std::mutex mtx;
+        common::Id         m_nextId;
 
-  public:
-    Database();
+        template <typename T, typename... Args> std::shared_ptr<T> CreateImpl(Args&&... args)
+        {
+            std::scoped_lock lock(mtx);
 
-    std::shared_ptr<IBusinessObject> Create(ObjectType type, const std::string& payload) override;
-    std::shared_ptr<IBusinessObject> Fetch(Id id) override;
-    bool                             Update(const std::shared_ptr<IBusinessObject>& obj) override;
-    bool            Delete(Id id, std::optional<Id> currentUserId = std::nullopt) override;
-    std::vector<Id> GetAllIds() const override;
-};
+            auto obj                = std::make_shared<T>(m_nextId++, std::forward<Args>(args)...);
+            m_storage[obj->GetId()] = obj;
+            return obj;
+        }
+
+      public:
+        Database();
+
+        std::shared_ptr<object::IBusinessObject> Create(common::ObjectType type,
+                                                        const std::string& payload) override;
+        std::shared_ptr<object::IBusinessObject> Fetch(common::Id id) override;
+        bool Update(const std::shared_ptr<object::IBusinessObject>& obj) override;
+        bool Delete(common::Id id, std::optional<common::Id> currentUserId = std::nullopt) override;
+        std::vector<common::Id> GetAllIds() const override;
+    };
+} // namespace insERT::database

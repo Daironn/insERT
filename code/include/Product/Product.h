@@ -6,13 +6,12 @@
 
 class Product : public IBusinessObject
 {
-    long        id{};
-    std::string name;
+    long        m_productId{};
+    std::string m_name;
 
   public:
     Product(long productId, const std::string& productName);
-    long       GetId() const override;
-    ObjectType GetType() const override;
-
-    const std::string& GetName() const;
+    long               GetId() const override;
+    ObjectType         GetType() const override;
+    const std::string& GetName() const override;
 };

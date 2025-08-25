@@ -1,60 +1,165 @@
 #include "Database.h"
 
-// TODO: Change CMake to include only needed files
 #include "AppUser/AppUser.h"
+#include "Document/Document.h"
+#include "Product/Product.h"
+#include "common/Logger.h"
+
 Database::Database()
 {
-    auto admin = std::make_unique<AppUser>(0, "admin");
-    storage[0] = std::move(admin);
-
-    nextId = 1;
-
-    LOG_INFO("Initialized database with default admin (id=0)");
+    m_nextId                 = 1;
+    auto admin               = std::make_shared<AppUser>(ADMIN_USER_ID, "admin");
+    m_storage[ADMIN_USER_ID] = admin;
+    LOG_INFO("Initialized database with default admin (id={})", ADMIN_USER_ID);
 }
 
-std::optional<std::shared_ptr<IBusinessObject>> Database::Fetch(long id)
+std::shared_ptr<IBusinessObject> Database::Create(ObjectType type, const std::string& payload)
 {
-    auto it = storage.find(id);
-    if (it == storage.end())
+    try
     {
-        LOG_WARNING("Object not found (id={})", id);
-        return std::nullopt;
+        std::shared_ptr<IBusinessObject> created;
+        switch (type)
+        {
+        case ObjectType::ObjectAppUser:
+            created = CreateImpl<AppUser>(payload);
+            break;
+        case ObjectType::ObjectProduct:
+            created = CreateImpl<Product>(payload);
+            break;
+        case ObjectType::ObjectDocument:
+            created = CreateImpl<Document>(payload);
+            break;
+        default:
+            LOG_ERROR("Database cannot create unsupported ObjectType");
+            return nullptr;
+        }
+
+        LOG_INFO("Database created object: ({}, {})", ObjectTypeToString(type), created->GetId());
+        return created;
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR("Database create exception: {}", e.what());
+        return nullptr;
+    }
+}
+
+std::shared_ptr<IBusinessObject> Database::Fetch(Id id)
+{
+    std::scoped_lock lock(mtx);
+    try
+    {
+        auto it = m_storage.find(id);
+
+        if (it == m_storage.end())
+        {
+            LOG_WARNING("Database fetch failed: Object not found (id={})", id);
+            return nullptr;
+        }
+        LOG_INFO("Database fetched object ({}, {})", ObjectTypeToString(it->second->GetType()), id);
+        return it->second;
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR("Database fetch failed: Exception for id={} : {}", id, e.what());
+        return nullptr;
+    }
+}
+
+bool Database::Update(const std::shared_ptr<IBusinessObject>& obj)
+{
+    if (!obj)
+    {
+        LOG_ERROR("Database cannot update null object");
+        return false;
     }
 
-    LOG_INFO("Fetched object ({}, {})", ObjectTypeToString(it->second->GetType()), id);
-    return it->second; // it->second jest shared_ptr<IBusinessObject>
-}
-
-void Database::Update(const IBusinessObject* obj)
-{
-    if (storage.find(obj->GetId()) == storage.end())
+    std::scoped_lock lock(mtx);
+    try
     {
-        LOG_ERROR("Object not found (id={})", obj->GetId());
-        return;
-        // throw std::runtime_error("Object not found");
+        auto it = m_storage.find(obj->GetId());
+        if (it == m_storage.end())
+        {
+            LOG_ERROR("Database update failed: Object not found (id={})", obj->GetId());
+            return false;
+        }
+
+        if (it->second->GetType() != obj->GetType())
+        {
+            LOG_ERROR(
+                "Database cannot update object:type mismatch for id={}. Stored={} Provided={}",
+                obj->GetId(),
+                ObjectTypeToString(it->second->GetType()),
+                ObjectTypeToString(obj->GetType()));
+            return false;
+        }
+
+        it->second = obj;
+
+        LOG_INFO(
+            "Database updated object ({}, {})", ObjectTypeToString(obj->GetType()), obj->GetId());
+        return true;
     }
-    LOG_INFO("Updated object ({}, {})", ObjectTypeToString(obj->GetType()), obj->GetId());
-}
-
-void Database::Delete(long id)
-{
-    auto it = storage.find(id);
-    if (storage.find(id) == storage.end())
+    catch (const std::exception& e)
     {
-        LOG_ERROR("Object not found (id={})", id);
-        return;
-        // throw std::runtime_error("Object not found");
+        LOG_ERROR("Database update exception for id={} : {}", obj->GetId(), e.what());
+        return false;
     }
-    LOG_INFO("Deleted object ({}, {})", ObjectTypeToString(it->second->GetType()), id);
-    storage.erase(it);
 }
 
-const std::vector<long> Database::GetAllIds() const
+bool Database::Delete(Id id, std::optional<Id> currentUserId)
 {
-    std::vector<long> ids;
-    for (const auto& [id, obj] : storage)
+    std::scoped_lock lock(mtx);
+    try
     {
+        if (id == ADMIN_USER_ID)
+        {
+            LOG_ERROR("Database attempt to delete protected admin id={}", id);
+            return false;
+        }
+        if (currentUserId && *currentUserId == id)
+        {
+            LOG_ERROR("Database attempt to delete currently logged user id={}", id);
+            return false;
+        }
+
+        auto it = m_storage.find(id);
+        if (it == m_storage.end())
+        {
+            LOG_WARNING("Database cannot delete requested for missing id={}", id);
+            return false;
+        }
+
+        if (it->second->GetType() == ObjectType::ObjectProduct)
+        {
+            Id pid = it->second->GetId();
+            for (auto& [did, obj] : m_storage)
+            {
+                if (obj->GetType() != ObjectType::ObjectDocument)
+                    continue;
+                auto doc = std::dynamic_pointer_cast<Document>(obj);
+                if (doc)
+                    doc->RemoveProduct(pid);
+            }
+        }
+
+        LOG_INFO("Database deleted object ({}, {})", ObjectTypeToString(it->second->GetType()), id);
+        m_storage.erase(it);
+        return true;
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR("Database delete exception for id={} : {}", id, e.what());
+        return false;
+    }
+}
+
+std::vector<Id> Database::GetAllIds() const
+{
+    std::scoped_lock lock(mtx);
+    std::vector<Id>  ids;
+
+    for (const auto& [id, obj] : m_storage)
         ids.push_back(id);
-    }
     return ids;
 }

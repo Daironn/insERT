@@ -8,10 +8,9 @@ class AppUser : public IBusinessObject
     std::string m_login;
 
   public:
-    AppUser(long userId, const std::string& userLogin) : m_userId(m_userId), m_login(userLogin) {}
+    AppUser(long userId, const std::string& userLogin);
 
-    long       GetId() const override;
-    ObjectType GetType() const override;
-
-    const std::string& GetLogin() const;
+    long               GetId() const override;
+    ObjectType         GetType() const override;
+    const std::string& GetName() const override;
 };

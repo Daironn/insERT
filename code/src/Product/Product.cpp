@@ -3,13 +3,14 @@
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
 
-Product::Product(long productId, const std::string& productName) : id(productId), name(productName)
+Product::Product(long productId, const std::string& productName)
+    : m_productId(productId), m_name(productName)
 {
 }
 
 long Product::GetId() const
 {
-    return id;
+    return m_productId;
 }
 
 ObjectType Product::GetType() const
@@ -19,5 +20,5 @@ ObjectType Product::GetType() const
 
 const std::string& Product::GetName() const
 {
-    return name;
+    return m_name;
 }

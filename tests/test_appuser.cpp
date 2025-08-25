@@ -5,29 +5,29 @@
 
 SCENARIO("AppUser basic functionality", "[AppUser]")
 {
-    GIVEN("An AppUser with id=42 and login=test_user")
+    GIVEN("A AppUser with id=42 and name='test_user'")
     {
         AppUser user(42, "test_user");
 
-        WHEN("we call GetId()")
+        WHEN("GetId is calleds")
         {
-            THEN("it should return 42")
+            THEN("42 should be returned")
             {
                 REQUIRE(user.GetId() == 42);
             }
         }
 
-        WHEN("we call GetName()")
+        WHEN("GetName is called")
         {
-            THEN("it should return 'test_user'")
+            THEN("'test_user' should be returned")
             {
                 REQUIRE(user.GetName() == "test_user");
             }
         }
 
-        WHEN("we call GetType()")
+        WHEN("GetType is called")
         {
-            THEN("it should return ObjectAppUser")
+            THEN("ObjectAppUser should be returned")
             {
                 REQUIRE(user.GetType() == ObjectType::ObjectAppUser);
             }

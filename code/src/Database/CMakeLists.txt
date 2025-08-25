@@ -5,3 +5,10 @@ target_include_directories(DATABASE
     ${CMAKE_SOURCE_DIR}/code/include/Database
     ${CMAKE_SOURCE_DIR}/code/include
 )
+
+target_link_libraries(DATABASE
+    PUBLIC PRODUCT
+    PUBLIC DOCUMENT
+    PUBLIC APPUSER
+    PUBLIC BUSINESSOPERATIONS
+    )

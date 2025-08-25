@@ -17,18 +17,18 @@ void App::Login(Id userId)
     auto obj = m_database->Fetch(userId);
     if (!obj)
     {
-        LOG_ERROR("Login failed: user with id={} not found", userId);
+        LOG_ERROR("Login failed: User id={} not found", userId);
         return;
     }
     if (obj->GetType() != ObjectType::ObjectAppUser)
     {
-        LOG_ERROR("Login failed: object with id={} is not an AppUser", userId);
+        LOG_ERROR("Login failed: Object id={} is not an AppUser", userId);
         return;
     }
     auto user = std::dynamic_pointer_cast<AppUser>(obj);
     if (!user)
     {
-        LOG_ERROR("Login failed: dynamic cast error for id={}", userId);
+        LOG_ERROR("Login failed: Cannot cast object id={} to AppUser", userId);
         return;
     }
     m_user = user;
@@ -44,7 +44,7 @@ void App::Logout()
     }
     else
     {
-        LOG_WARNING("Logout called but no user logged in");
+        LOG_WARNING("Logout called, but no user was logged in");
     }
 }
 
@@ -67,7 +67,7 @@ void App::DoBusinessOperations()
 
     m_businessOps->RemoveAllDocuments(user->GetId());
 
-    LOG_INFO("Finished business operations");
+    LOG_INFO("Business operations completed for user id={}", user->GetId());
 }
 
 std::shared_ptr<IDatabase> App::GetDatabase()

@@ -23,4 +23,5 @@
         "source.fixAll": "explicit",
         "source.fixAll.clang-tidy": "explicit"
     },
+    "testMate.cpp.test.executables": "out/build/tests/tests_all"
 }

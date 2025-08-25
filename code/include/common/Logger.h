@@ -1,6 +1,11 @@
 #pragma once
 #include <chrono>
+#include <ctime>
+#include <format>
+#include <iomanip>
 #include <iostream>
+#include <string>
+#include <string_view>
 
 enum class LogLevel
 {
@@ -37,9 +42,10 @@ class Logger
         auto        time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         std::string message = std::vformat(fmt, std::make_format_args(args...));
 
-        std::cout << "[" << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S") << "] "
-                  << levelStr << " " << file << ":" << line << " (" << func << "): " << message
-                  << std::endl;
+        std::tm tm_buf;
+        localtime_s(&tm_buf, &time);
+        std::cout << "[" << std::put_time(&tm_buf, "%Y-%m-%d %H:%M:%S") << "] " << levelStr << " "
+                  << file << ":" << line << " (" << func << "): " << message << std::endl;
     }
 };
 

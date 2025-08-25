@@ -1,5 +1,7 @@
 #include "BusinessOperations.h"
 
+#include <cstdlib>
+
 #include "Database/IDatabase.h"
 #include "Document/Document.h"
 #include "Product/Product.h"

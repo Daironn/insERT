@@ -1,23 +1,25 @@
 #pragma once
 #include <memory>
-#include <string>
+
+#include "common/common.h"
 
 class AppUser;
-class Database;
-class Document;
+class IDatabase;
+class IBusinessOperations;
 class App
 {
   private:
-    std::weak_ptr<AppUser>    m_user;
-    std::shared_ptr<Database> m_database;
+    std::weak_ptr<AppUser>               m_user;
+    std::shared_ptr<IDatabase>           m_database;
+    std::shared_ptr<IBusinessOperations> m_businessOps;
 
   public:
-    App();
+    App(std::shared_ptr<IDatabase> database, std::shared_ptr<IBusinessOperations> businessOps);
+    ~App() = default;
 
-    void                      Login(int userId);
-    void                      Logout();
-    void                      DoBusinessOperations();
-    std::shared_ptr<Document> CreateDocument(const std::string& number);
-    void AddProductToDocument(std::shared_ptr<Document> doc, const std::string& productName);
-    void RemoveAllDocuments();
+    void Login(Id userId);
+    void Logout();
+    void DoBusinessOperations();
+
+    std::shared_ptr<IDatabase> GetDatabase();
 };

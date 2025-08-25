@@ -16,6 +16,8 @@ target_link_libraries(insERT
     DATABASE
     DOCUMENT
     PRODUCT
+    BUSINESSOPERATIONS
+    SYSTEMOPERATIONS
 )
 
 enable_testing()

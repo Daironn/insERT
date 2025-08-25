@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "BusinessObject/IBusinessObject.h"
 
 class Document : public IBusinessObject
@@ -16,5 +18,6 @@ class Document : public IBusinessObject
     const std::string& GetName() const override;
 
     void                     AddProduct(long productId);
+    void                     RemoveProduct(long productId);
     const std::vector<long>& GetProducts() const;
 };

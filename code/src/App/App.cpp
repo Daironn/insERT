@@ -1,16 +1,18 @@
 #include "App.h"
 
 #include "AppUser.h"
+#include "BusinessOperations.h"
 #include "Database.h"
-#include "Document.h"
-#include "Product.h"
 
 // TODO: Change CMake to include only needed files
 #include "common/Logger.h"
 
-App::App() : m_database(std::make_shared<Database>()) {}
+App::App(std::shared_ptr<IDatabase> db, std::shared_ptr<IBusinessOperations> businessOps)
+    : m_database(std::move(db)), m_businessOps(std::move(businessOps))
+{
+}
 
-void App::Login(int userId)
+void App::Login(Id userId)
 {
     auto obj = m_database->Fetch(userId);
     if (!obj)
@@ -18,14 +20,17 @@ void App::Login(int userId)
         LOG_ERROR("Login failed: user with id={} not found", userId);
         return;
     }
-
-    auto user = std::dynamic_pointer_cast<AppUser>(obj);
-    if (!user)
+    if (obj->GetType() != ObjectType::ObjectAppUser)
     {
         LOG_ERROR("Login failed: object with id={} is not an AppUser", userId);
         return;
     }
-
+    auto user = std::dynamic_pointer_cast<AppUser>(obj);
+    if (!user)
+    {
+        LOG_ERROR("Login failed: dynamic cast error for id={}", userId);
+        return;
+    }
     m_user = user;
     LOG_INFO("User login: {} (id={})", user->GetName(), user->GetId());
 }
@@ -45,8 +50,6 @@ void App::Logout()
 
 void App::DoBusinessOperations()
 {
-    LOG_INFO("Testing new Database operations...");
-
     auto user = m_user.lock();
     if (!user)
     {
@@ -54,66 +57,20 @@ void App::DoBusinessOperations()
         return;
     }
 
-    m_database->Fetch(user->GetId());
+    LOG_INFO("Starting business operations for user id={}", user->GetId());
 
-    CreateDocument("DC_001");
-    CreateDocument("DC_002");
-    CreateDocument("DC_003");
+    m_businessOps->AddNewDocument("DC_001");
+    m_businessOps->AddNewDocument("DC_002");
+    m_businessOps->AddNewDocument("DC_003");
 
-    RemoveAllDocuments();
+    m_businessOps->FetchMoreDocuments();
+
+    m_businessOps->RemoveAllDocuments(user->GetId());
+
+    LOG_INFO("Finished business operations");
 }
 
-std::shared_ptr<Document> App::CreateDocument(const std::string& number)
+std::shared_ptr<IDatabase> App::GetDatabase()
 {
-    if (auto doc = m_database->Create<Document>(number); doc)
-    {
-        LOG_INFO("Created document id={} number={}", doc->GetId(), doc->GetName());
-        return doc;
-    }
-    else
-    {
-        LOG_ERROR("Failed to create document number={}", number);
-        return nullptr;
-    }
-}
-
-void App::AddProductToDocument(std::shared_ptr<Document> doc, const std::string& productName)
-{
-    if (!doc)
-    {
-        LOG_ERROR("AddProductToDocument: null document");
-        return;
-    }
-
-    auto product = m_database->Create<Product>(productName);
-    if (!product)
-    {
-        LOG_ERROR("AddProductToDocument: failed to create product {}", productName);
-        return;
-    }
-
-    doc->AddProduct(product->GetId());
-    LOG_INFO("Added product {} (id={}) to document id={}",
-             product->GetName(),
-             product->GetId(),
-             doc->GetId());
-}
-
-void App::RemoveAllDocuments()
-{
-    std::vector<long> toDelete;
-    for (auto id : m_database->GetAllIds())
-    {
-        auto obj = m_database->Fetch(id);
-        if (obj)
-        {
-            if (obj->GetType() == ObjectType::ObjectDocument)
-                toDelete.push_back(id);
-        }
-    }
-    for (auto id : toDelete)
-    {
-        m_database->Delete(id);
-    }
-    LOG_INFO("Removed all documents");
+    return m_database;
 }

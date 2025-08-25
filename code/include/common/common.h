@@ -1,24 +1,27 @@
 #pragma once
+#include <string>
 
-#define ADMIN_USER_ID 0
-namespace SystemOperations
+using Id                          = long;
+inline constexpr Id ADMIN_USER_ID = 0;
+
+enum class ObjectType
 {
-    // void BackupDocuments()
-    // {
-    //     using namespace BusinessApp;
+    ObjectAppUser = 0,
+    ObjectDocument,
+    ObjectProduct
+};
 
-    //     for (int i = 1; i < 5; i++)
-    //     {
-    //         try
-    //         {
-    //             Document document{};
-    //             document.Fetch(i);
-    //             std::cout << "Backup document: " << document.Id() << std::endl;
-    //         }
-    //         catch (std::exception& e)
-    //         {
-    //             std::cerr << "Backup exception: " << i << " " << e.what() << std::endl;
-    //         }
-    //     }
-    // }
-} // namespace SystemOperations
+inline std::string ObjectTypeToString(ObjectType type)
+{
+    switch (type)
+    {
+    case ObjectType::ObjectAppUser:
+        return "AppUser";
+    case ObjectType::ObjectDocument:
+        return "Document";
+    case ObjectType::ObjectProduct:
+        return "Product";
+    default:
+        return "Unknown";
+    }
+}

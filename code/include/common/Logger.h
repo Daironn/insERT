@@ -33,6 +33,11 @@ namespace insERT::logger
             return true;
         }
 
+        static void InstallConsoleBackend()
+        {
+            SetBackend(std::make_shared<ConsoleLogger>());
+        }
+
         template <typename... Args>
         static void Log(LogLevel         level,
                         const char*      file,

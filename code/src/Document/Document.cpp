@@ -3,9 +3,8 @@
 #include <algorithm>
 
 #include "Product/Product.h"
-
-// TODO: Change CMake to include only needed files
 #include "common/Logger.h"
+
 namespace insERT::object
 {
     Document::Document(long documentId, const std::string& productNumber)

@@ -3,9 +3,8 @@
 #include "AppUser.h"
 #include "BusinessOperations.h"
 #include "Database.h"
-
-// TODO: Change CMake to include only needed files
 #include "common/Logger.h"
+
 
 namespace insERT::app
 {

@@ -1,30 +1,26 @@
 {
+    "$schema": "https://cmake.org/cmake/help/latest/json-schema/cmake-presets.json",
     "version": 8,
     "configurePresets": [
         {
-            "name": "ClangCl",
-            "displayName": "Clang-cl 20.1.8 x86_64-pc-windows-msvc",
-            "description": "Using clang-cl as C and C++ compiler",
+            "name": "VS-MSVC",
+            "displayName": "Visual Studio 17 2022 (MSVC)",
             "generator": "Visual Studio 17 2022",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
-                "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe",
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         }
     ],
     "buildPresets": [
         {
-            "name": "ClangCl-Debug",
-            "configurePreset": "ClangCl",
+            "name": "build-VS-MSVC-Debug",
+            "configurePreset": "VS-MSVC",
             "configuration": "Debug"
         },
         {
-            "name": "ClangCl-Release",
-            "configurePreset": "ClangCl",
+            "name": "build-VS-MSVC-Release",
+            "configurePreset": "VS-MSVC",
             "configuration": "Release"
         }
     ]

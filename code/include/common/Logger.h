@@ -22,30 +22,7 @@ namespace insERT::logger
     class Logger
     {
       public:
-        static void SetBackend(std::shared_ptr<ILogger> backend)
-        {
-            std::scoped_lock lock(GetMutex());
-            GetInstance() = std::move(backend);
-        }
-
-        static std::shared_ptr<ILogger> GetBackend()
-        {
-            std::scoped_lock lock(GetMutex());
-            return GetInstance();
-        }
-
-        static std::shared_ptr<FileLogger> CreateFileBackend(const std::string& path,
-                                                             bool               append = true)
-        {
-            auto logger = std::make_shared<FileLogger>(path, append);
-            if (!logger->IsReady())
-            {
-                return nullptr;
-            }
-            return logger;
-        }
-
-        static bool InstallFileBackendSafe(const std::string& path, bool append = true)
+        static bool InstallFileBackend(const std::string& path, bool append = true)
         {
             auto logger = CreateFileBackend(path, append);
             if (!logger)
@@ -97,6 +74,29 @@ namespace insERT::logger
         {
             static std::mutex mutex;
             return mutex;
+        }
+
+        static void SetBackend(std::shared_ptr<ILogger> backend)
+        {
+            std::scoped_lock lock(GetMutex());
+            GetInstance() = std::move(backend);
+        }
+
+        static std::shared_ptr<ILogger> GetBackend()
+        {
+            std::scoped_lock lock(GetMutex());
+            return GetInstance();
+        }
+
+        static std::shared_ptr<FileLogger> CreateFileBackend(const std::string& path,
+                                                             bool               append = true)
+        {
+            auto logger = std::make_shared<FileLogger>(path, append);
+            if (!logger->IsReady())
+            {
+                return nullptr;
+            }
+            return logger;
         }
     };
 

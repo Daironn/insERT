@@ -16,18 +16,21 @@ using ::testing::NiceMock;
 using ::testing::Return;
 using ::testing::StrictMock;
 
-class MockBusinessOperations : public IBusinessOperations
+class MockBusinessOperations : public insERT::ops::IBusinessOperations
 {
   public:
     MOCK_METHOD(void, AddNewDocument, (const std::string& docName), (override));
     MOCK_METHOD(void, FetchMoreDocuments, (), (override));
-    MOCK_METHOD(bool, RemoveAllDocuments, (std::optional<Id> currentUserId), (override));
+    MOCK_METHOD(bool,
+                RemoveAllDocuments,
+                (std::optional<insERT::common::Id> currentUserId),
+                (override));
 };
 
-class MockBusinessObject : public IBusinessObject
+class MockBusinessObject : public insERT::object::IBusinessObject
 {
   public:
-    MockBusinessObject(long id, ObjectType t, std::string name)
+    MockBusinessObject(long id, insERT::common::ObjectType t, std::string name)
         : m_id(id), m_type(t), m_name(std::move(name))
     {
     }
@@ -36,7 +39,7 @@ class MockBusinessObject : public IBusinessObject
     {
         return m_id;
     }
-    ObjectType GetType() const override
+    insERT::common::ObjectType GetType() const override
     {
         return m_type;
     }
@@ -46,9 +49,9 @@ class MockBusinessObject : public IBusinessObject
     }
 
   private:
-    long        m_id;
-    ObjectType  m_type;
-    std::string m_name;
+    long                       m_id;
+    insERT::common::ObjectType m_type;
+    std::string                m_name;
 };
 
 SCENARIO("App::GetDatabase returns injected database", "[App][GetDatabase]")
@@ -57,7 +60,8 @@ SCENARIO("App::GetDatabase returns injected database", "[App][GetDatabase]")
     {
         auto database    = std::make_shared<NiceMock<MockDatabase>>();
         auto businessOps = std::make_shared<NiceMock<MockBusinessOperations>>();
-        App  app(database, businessOps);
+
+        insERT::app::App app(database, businessOps);
 
         WHEN("GetDatabase is called")
         {
@@ -77,8 +81,9 @@ SCENARIO("Successful login followed by business operations", "[App][Login][Succe
     {
         auto mockDb          = std::make_shared<StrictMock<MockDatabase>>();
         auto mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
-        App  app(mockDb, mockBusinessOps);
-        auto user = std::make_shared<AppUser>(42, "test_user");
+        auto user            = std::make_shared<insERT::object::AppUser>(42, "test_user");
+
+        insERT::app::App app(mockDb, mockBusinessOps);
 
         WHEN("Login called for existing AppUser id")
         {
@@ -106,7 +111,8 @@ SCENARIO("Login fails when user id does not exist", "[App][Login][Failure]")
     {
         auto mockDb          = std::make_shared<StrictMock<MockDatabase>>();
         auto mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
-        App  app(mockDb, mockBusinessOps);
+
+        insERT::app::App app(mockDb, mockBusinessOps);
 
         WHEN("Login called for non-existing id")
         {
@@ -132,10 +138,10 @@ SCENARIO("Login fails when Fetch returns object of wrong type", "[App][Login][Fa
     {
         auto mockDb          = std::make_shared<StrictMock<MockDatabase>>();
         auto mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
-        App  app(mockDb, mockBusinessOps);
+        auto other           = std::make_shared<MockBusinessObject>(
+            43, insERT::common::ObjectType::ObjectDocument, "not_user");
 
-        auto other
-            = std::make_shared<MockBusinessObject>(43, ObjectType::ObjectDocument, "not_user");
+        insERT::app::App app(mockDb, mockBusinessOps);
 
         WHEN("Fetch returns object of wrong type")
         {
@@ -161,10 +167,10 @@ SCENARIO("Login fails when Fetch returns non-AppUser instance", "[App][Login][Fa
     {
         auto mockDb          = std::make_shared<StrictMock<MockDatabase>>();
         auto mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
-        App  app(mockDb, mockBusinessOps);
+        auto fakeUser        = std::make_shared<MockBusinessObject>(
+            44, insERT::common::ObjectType::ObjectAppUser, "pretend");
 
-        auto fakeUser
-            = std::make_shared<MockBusinessObject>(44, ObjectType::ObjectAppUser, "pretend");
+        insERT::app::App app(mockDb, mockBusinessOps);
 
         WHEN("Fetch returns non-AppUser instance")
         {
@@ -188,10 +194,10 @@ SCENARIO("Logout clears logged in user and prevents further business ops", "[App
 {
     GIVEN("An App with no user logged in")
     {
-        auto mockDb          = std::make_shared<StrictMock<MockDatabase>>();
-        auto mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
-        App  app(mockDb, mockBusinessOps);
-        auto user = std::make_shared<AppUser>(55, "logout_user");
+        auto             mockDb          = std::make_shared<StrictMock<MockDatabase>>();
+        auto             mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
+        insERT::app::App app(mockDb, mockBusinessOps);
+        auto             user = std::make_shared<insERT::object::AppUser>(55, "logout_user");
 
         WHEN("Login followed by Logout is called")
         {
@@ -218,7 +224,8 @@ SCENARIO("Logout when no user logged in", "[App][Logout]")
     {
         auto mockDb          = std::make_shared<NiceMock<MockDatabase>>();
         auto mockBusinessOps = std::make_shared<StrictMock<MockBusinessOperations>>();
-        App  app(mockDb, mockBusinessOps);
+
+        insERT::app::App app(mockDb, mockBusinessOps);
 
         WHEN("Logout is called")
         {

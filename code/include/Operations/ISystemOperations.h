@@ -1,8 +1,11 @@
 #pragma once
 
-class ISystemOperations
+namespace insERT::ops
 {
-  public:
-    virtual ~ISystemOperations()   = default;
-    virtual void BackupDocuments() = 0;
-};
+    class ISystemOperations
+    {
+      public:
+        virtual ~ISystemOperations()   = default;
+        virtual void BackupDocuments() = 0;
+    };
+} // namespace insERT::ops

@@ -1,4 +1,6 @@
+#include <iostream>
 #include <memory>
+#include <string>
 
 #include "App.h"
 #include "BusinessOperations.h"
@@ -11,23 +13,48 @@
 
 int main(int argc, char** argv)
 {
-    auto db = std::make_shared<Database>();
+    std::string logFile;
+    bool        doBackup = false;
 
-    std::shared_ptr<IBusinessOperations> bizIface = std::make_shared<BusinessOperations>(db);
-    std::shared_ptr<ISystemOperations>   sysIface = std::make_shared<SystemOperations>(db);
-
-    App app(db, bizIface);
-
-    if (argc == 1)
+    for (int i = 1; i < argc; ++i)
     {
-        app.Login(ADMIN_USER_ID);
-        app.DoBusinessOperations();
-        app.Logout();
+        std::string arg = argv[i];
+
+        if (arg == "--log-file" && i + 1 < argc)
+        {
+            logFile = argv[++i];
+            continue;
+        }
+
+        if (arg == "--backup")
+        {
+            doBackup = true;
+            continue;
+        }
     }
-    else if (argc == 2 && std::string{argv[1]} == "-backup")
+
+    if (!logFile.empty())
+    {
+        insERT::logger::Logger::InstallFileBackend(logFile, false);
+    }
+
+    auto db = std::make_shared<insERT::database::Database>();
+    std::shared_ptr<insERT::ops::IBusinessOperations> bizIface
+        = std::make_shared<insERT::ops::BusinessOperations>(db);
+    std::shared_ptr<insERT::ops::ISystemOperations> sysIface
+        = std::make_shared<insERT::ops::SystemOperations>(db);
+
+    insERT::app::App app(db, bizIface);
+
+    if (doBackup)
     {
         sysIface->BackupDocuments();
+        return 0;
     }
+
+    app.Login(insERT::common::ADMIN_USER_ID);
+    app.DoBusinessOperations();
+    app.Logout();
 
     return 0;
 }

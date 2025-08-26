@@ -3,23 +3,38 @@
 
 #include "common/common.h"
 
-class AppUser;
-class IDatabase;
-class IBusinessOperations;
-class App
+namespace insERT::object
 {
-  private:
-    std::weak_ptr<AppUser>               m_user;
-    std::shared_ptr<IDatabase>           m_database;
-    std::shared_ptr<IBusinessOperations> m_businessOps;
+    class AppUser;
+}
 
-  public:
-    App(std::shared_ptr<IDatabase> database, std::shared_ptr<IBusinessOperations> businessOps);
-    ~App() = default;
+namespace insERT::database
+{
+    class IDatabase;
+}
+namespace insERT::ops
+{
+    class IBusinessOperations;
+}
+namespace insERT::app
+{
+    class App
+    {
+      private:
+        std::weak_ptr<object::AppUser>            m_user;
+        std::shared_ptr<database::IDatabase>      m_database;
+        std::shared_ptr<ops::IBusinessOperations> m_businessOps;
 
-    void Login(Id userId);
-    void Logout();
-    void DoBusinessOperations();
+      public:
+        App(std::shared_ptr<database::IDatabase>      database,
+            std::shared_ptr<ops::IBusinessOperations> businessOps);
+        ~App() = default;
 
-    std::shared_ptr<IDatabase> GetDatabase();
-};
+        void Login(common::Id userId);
+        void Logout();
+        void DoBusinessOperations();
+
+        std::shared_ptr<database::IDatabase> GetDatabase();
+    };
+
+} // namespace insERT::app

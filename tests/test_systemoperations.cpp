@@ -11,14 +11,17 @@ using ::testing::StrictMock;
 
 SCENARIO("SystemOperations BackupDocuments fetches and logs all documents", "[SystemOperations]")
 {
-    auto             mockDb = std::make_shared<StrictMock<MockDatabase>>();
-    SystemOperations sys(mockDb);
+    auto mockDb = std::make_shared<StrictMock<MockDatabase>>();
+
+    insERT::ops::SystemOperations sys(mockDb);
 
     GIVEN("Database that contains some documents")
     {
-        EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<Id>{2, 3}));
-        EXPECT_CALL(*mockDb, Fetch(2)).WillOnce(Return(std::make_shared<Document>(2, "doc1")));
-        EXPECT_CALL(*mockDb, Fetch(3)).WillOnce(Return(std::make_shared<Document>(3, "doc2")));
+        EXPECT_CALL(*mockDb, GetAllIds()).WillOnce(Return(std::vector<insERT::common::Id>{2, 3}));
+        EXPECT_CALL(*mockDb, Fetch(2))
+            .WillOnce(Return(std::make_shared<insERT::object::Document>(2, "doc1")));
+        EXPECT_CALL(*mockDb, Fetch(3))
+            .WillOnce(Return(std::make_shared<insERT::object::Document>(3, "doc2")));
 
         WHEN("BackupDocuments is called")
         {

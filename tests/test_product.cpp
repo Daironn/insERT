@@ -7,7 +7,7 @@ SCENARIO("Product basic functionality", "[Product]")
 {
     GIVEN("A Product with id=100 and name='Laptop'")
     {
-        Product product(100, "Laptop");
+        insERT::object::Product product(100, "Laptop");
 
         WHEN("GetId is called")
         {
@@ -29,7 +29,7 @@ SCENARIO("Product basic functionality", "[Product]")
         {
             THEN("ObjectProduct should be returned")
             {
-                REQUIRE(product.GetType() == ObjectType::ObjectProduct);
+                REQUIRE(product.GetType() == insERT::common::ObjectType::ObjectProduct);
             }
         }
     }

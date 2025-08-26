@@ -11,50 +11,64 @@
 #include "common/Logger.h"
 #include "common/common.h"
 
-int main(int argc, char** argv)
+namespace insERT::main
 {
-    std::string logFile;
-    bool        doBackup = false;
 
-    for (int i = 1; i < argc; ++i)
+    int main(int argc, char** argv)
     {
-        std::string arg = argv[i];
+        std::string logFile;
+        bool        doBackup = false;
 
-        if (arg == "--log-file" && i + 1 < argc)
+        for (int i = 1; i < argc; ++i)
         {
-            logFile = argv[++i];
-            continue;
+            std::string arg = argv[i];
+
+            if (arg == "--log-file" && i + 1 < argc)
+            {
+                logFile = argv[++i];
+                continue;
+            }
+
+            if (arg == "--backup")
+            {
+                doBackup = true;
+                continue;
+            }
         }
 
-        if (arg == "--backup")
+        if (!logFile.empty())
         {
-            doBackup = true;
-            continue;
+            auto instalState = insERT::logger::Logger::InstallFileBackend(logFile, false);
+            if (!instalState)
+            {
+                insERT::logger::LOG_WARNING(
+                    "Failed to initialize file logger, falling back to console");
+            }
         }
-    }
 
-    if (!logFile.empty())
-    {
-        insERT::logger::Logger::InstallFileBackend(logFile, false);
-    }
+        auto db = std::make_shared<insERT::database::Database>();
+        std::shared_ptr<insERT::ops::IBusinessOperations> bizIface
+            = std::make_shared<insERT::ops::BusinessOperations>(db);
+        std::shared_ptr<insERT::ops::ISystemOperations> sysIface
+            = std::make_shared<insERT::ops::SystemOperations>(db);
 
-    auto db = std::make_shared<insERT::database::Database>();
-    std::shared_ptr<insERT::ops::IBusinessOperations> bizIface
-        = std::make_shared<insERT::ops::BusinessOperations>(db);
-    std::shared_ptr<insERT::ops::ISystemOperations> sysIface
-        = std::make_shared<insERT::ops::SystemOperations>(db);
+        insERT::app::App app(db, bizIface);
 
-    insERT::app::App app(db, bizIface);
+        if (doBackup)
+        {
+            sysIface->BackupDocuments();
+            return 0;
+        }
 
-    if (doBackup)
-    {
-        sysIface->BackupDocuments();
+        app.Login(insERT::common::ADMIN_USER_ID);
+        app.DoBusinessOperations();
+        app.Logout();
+
         return 0;
     }
+} // namespace insERT::main
 
-    app.Login(insERT::common::ADMIN_USER_ID);
-    app.DoBusinessOperations();
-    app.Logout();
-
-    return 0;
+int main(int argc, char** argv)
+{
+    return insERT::main::main(argc, argv);
 }

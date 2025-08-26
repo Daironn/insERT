@@ -15,7 +15,7 @@ Testy napisałem, korzystając z **Catch2** jako frameworka testowego oraz **gMo
 ## Logi
 Format logów wygląda następująco: `[Czas] TypLogu Plik:Linia Funkcja Wiadomość`
 
-Zdecydowałem się na taki format, ponieważ daje on pełny pogląd na sytuację: kiedy dana operacja miała miejsce, skąd pochodzi log i w której linii kodu został wygenerowany — dzięki temu można od razu przejść do odpowiedniego fragmentu źródła. W logu znajduje się również nazwa metody oraz komunikat sformatowany przy użyciu `std::format` z biblioteki standardowej , co zapewnia elastyczność co do liczby i typów przekazywanych parametrów.
+Zdecydowałem się na taki format, ponieważ daje on pełny pogląd na sytuację: kiedy dana operacja miała miejsce, skąd pochodzi log i w której linii kodu został wygenerowany, dzięki temu można od razu przejść do odpowiedniego fragmentu źródła. W logu znajduje się również nazwa metody oraz komunikat sformatowany przy użyciu `std::format` z biblioteki standardowej , co zapewnia elastyczność co do liczby i typów przekazywanych parametrów.
 
 Przykład logu:
 `[2025-08-26 17:10:50] INFO ...\code\src\Database\Database.cpp:164 (Delete): Database deleted object (Document, 15)`
@@ -34,6 +34,6 @@ Zdecydowałem się na dodanie tylko jednej komendy, jaką jest `--log-file`, kt�
 
 ``` insERT.exe --log-file "console.log" ```
 
-Komendę `--backup` postanowiłem pozostawić praktycznie bez zmian — zachowuje dotychczasowe działanie. Wywołuje ona opcję systemową, dokładniej: tworzy kopię zapasową dokumentów z bazy danych.
+Komendę `--backup` postanowiłem pozostawić praktycznie bez zmian i zachowuje dotychczasowe działanie. Wywołuje ona opcję systemową, dokładniej: tworzy kopię zapasową dokumentów z bazy danych.
 
 ``` insERT.exe --backup" ``` 

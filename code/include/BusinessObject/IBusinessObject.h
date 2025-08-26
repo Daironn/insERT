@@ -4,7 +4,6 @@
 
 #include "common/common.h"
 
-
 class IBusinessObject
 {
   public:

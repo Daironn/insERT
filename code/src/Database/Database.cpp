@@ -39,7 +39,10 @@ std::shared_ptr<IBusinessObject> Database::Create(ObjectType type, const std::st
     }
     catch (const std::exception& e)
     {
-        LOG_ERROR("Database create exception: {}", e.what());
+        LOG_ERROR("Database create exception for type={} and name={} : {}",
+                  ObjectTypeToString(type),
+                  payload,
+                  e.what());
         return nullptr;
     }
 }
@@ -56,12 +59,14 @@ std::shared_ptr<IBusinessObject> Database::Fetch(Id id)
             LOG_WARNING("Database fetch failed: Object not found (id={})", id);
             return nullptr;
         }
-        LOG_INFO("Database fetched object ({}, {})", ObjectTypeToString(it->second->GetType()), id);
+        LOG_INFO("Database fetched object: ({}, {})",
+                 ObjectTypeToString(it->second->GetType()),
+                 it->second->GetId());
         return it->second;
     }
     catch (const std::exception& e)
     {
-        LOG_ERROR("Database fetch failed: Exception for id={} : {}", id, e.what());
+        LOG_ERROR("Database fetch exception for id={} : {}", id, e.what());
         return nullptr;
     }
 }
@@ -70,7 +75,7 @@ bool Database::Update(const std::shared_ptr<IBusinessObject>& obj)
 {
     if (!obj)
     {
-        LOG_ERROR("Database cannot update null object");
+        LOG_ERROR("Database update failed: null object provided");
         return false;
     }
 
@@ -80,14 +85,14 @@ bool Database::Update(const std::shared_ptr<IBusinessObject>& obj)
         auto it = m_storage.find(obj->GetId());
         if (it == m_storage.end())
         {
-            LOG_ERROR("Database update failed: Object not found (id={})", obj->GetId());
+            LOG_ERROR("Database cannot update missing object id={}", obj->GetId());
             return false;
         }
 
         if (it->second->GetType() != obj->GetType())
         {
             LOG_ERROR(
-                "Database cannot update object:type mismatch for id={}. Stored={} Provided={}",
+                "Database cannot update object: type mismatch for id={}. Stored={} Provided={}",
                 obj->GetId(),
                 ObjectTypeToString(it->second->GetType()),
                 ObjectTypeToString(obj->GetType()));
@@ -95,9 +100,8 @@ bool Database::Update(const std::shared_ptr<IBusinessObject>& obj)
         }
 
         it->second = obj;
-
         LOG_INFO(
-            "Database updated object ({}, {})", ObjectTypeToString(obj->GetType()), obj->GetId());
+            "Database updated object: ({}, {})", ObjectTypeToString(obj->GetType()), obj->GetId());
         return true;
     }
     catch (const std::exception& e)
@@ -114,7 +118,7 @@ bool Database::Delete(Id id, std::optional<Id> currentUserId)
     {
         if (id == ADMIN_USER_ID)
         {
-            LOG_ERROR("Database attempt to delete protected admin id={}", id);
+            LOG_ERROR("Database attempt to delete admin user id={}", ADMIN_USER_ID);
             return false;
         }
         if (currentUserId && *currentUserId == id)
@@ -126,7 +130,7 @@ bool Database::Delete(Id id, std::optional<Id> currentUserId)
         auto it = m_storage.find(id);
         if (it == m_storage.end())
         {
-            LOG_WARNING("Database cannot delete requested for missing id={}", id);
+            LOG_WARNING("Database delete failed: Object not found (id={})", id);
             return false;
         }
 
@@ -136,10 +140,14 @@ bool Database::Delete(Id id, std::optional<Id> currentUserId)
             for (auto& [did, obj] : m_storage)
             {
                 if (obj->GetType() != ObjectType::ObjectDocument)
+                {
                     continue;
-                auto doc = std::dynamic_pointer_cast<Document>(obj);
-                if (doc)
+                }
+
+                if (auto doc = std::dynamic_pointer_cast<Document>(obj); doc)
+                {
                     doc->RemoveProduct(pid);
+                }
             }
         }
 
@@ -160,6 +168,9 @@ std::vector<Id> Database::GetAllIds() const
     std::vector<Id>  ids;
 
     for (const auto& [id, obj] : m_storage)
+    {
         ids.push_back(id);
+    }
+    LOG_INFO("Database GetAllIds returned {} items", ids.size());
     return ids;
 }

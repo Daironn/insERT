@@ -2,7 +2,7 @@
 #include <string>
 
 using Id                          = long;
-inline constexpr Id ADMIN_USER_ID = 0;
+inline constexpr Id ADMIN_USER_ID = 1;
 
 enum class ObjectType
 {

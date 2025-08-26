@@ -1,5 +1,7 @@
 #include "Document.h"
 
+#include <algorithm>
+
 #include "Product/Product.h"
 
 // TODO: Change CMake to include only needed files

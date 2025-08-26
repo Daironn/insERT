@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "common/common.h"
+
 class IBusinessObject;
 
 class IDatabase

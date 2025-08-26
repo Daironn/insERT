@@ -1,8 +1,12 @@
 # insERT — zadanie rekrutacyjne
 
+Pozwoliłem sobie napisać README w języku polskim, mimo że cały projekt tworzyłem z przyzwyczajenia po angielsku. Zdecydowałem się na to, ponieważ w ten sposób łatwiej było mi przekazać kilka rzeczy.
+
 ## Kilka słów o zadaniu
 
-Tworząc refaktoryzację, starałem się, aby zachowanie programu było jak najbardziej podobne do pierwotnej wersji; dlatego wszystkie operacje wykonują się w podobny sposób jak w otrzymanym pliku `main.cpp`. Uznałem, że właśnie na tym polega refaktoryzacja. Starałem się również, żeby kod był jak najprostszy, schludny i pisany zgodnie z dobrymi standardami. Stąd obecność `clang-tidy` i `clang-format`, które pomagają zachować spójność plików.
+Tworząc refaktoryzację, starałem się, aby zachowanie programu było jak najbardziej podobne do pierwotnej wersji, dlatego wszystkie operacje wykonują się w podobny sposób jak w otrzymanym pliku `main.cpp`. Uznałem, że właśnie na tym polega refaktoryzacja. Starałem się również, żeby kod był jak najprostszy, schludny i pisany zgodnie z dobrymi standardami. Stąd obecność `clang-tidy` i `clang-format`, które pomagają zachować spójność plików. 
+
+Zadanie było dla mnie bardzo przyjemne i dało spore pole do popisu. Wciąż widzę miejsca, w których mógłbym coś ulepszyć, ale musiałem znaleźć balans, żeby zmieścić się w czasie. Jestem zadowolony z efektów, mimo kilku drobnych niedociągnięć, bo trudno jest robić Code Review własnego kodu. Myślę, że to jedno z ciekawszych zadań, z jakimi spotkałem się podczas rekrutacji, i mam nadzieję, że będziemy mieli okazję o nim porozmawiać :D
 
 ## Testy
 
